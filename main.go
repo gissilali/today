@@ -1,11 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gissilali/today/cmd"
+	"github.com/gissilali/today/repositories"
 )
 
 func main() {
-	fmt.Print("Hello")
+	repositories.InitDB()
 	cmd.Execute()
 }
