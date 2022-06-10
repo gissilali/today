@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/gissilali/today/repositories"
 	"strconv"
 )
 
@@ -67,10 +68,18 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.addedTasks = append(m.addedTasks, m.textInput.Value())
 			m.textInput.SetValue("")
 		case tea.KeyCtrlS:
-			for _, task := range m.addedTasks {
-				fmt.Println("✔", task)
-			}
 
+			for _, task := range m.addedTasks {
+				db := repositories.CurrentDB()
+				db.Create(&repositories.Task{
+					Task:       task,
+					IsDone:     false,
+					TaskListId: nil,
+					AccountId:  nil,
+				})
+			}
+			tasksAddedCount := len(m.addedTasks)
+			fmt.Println("✔", strconv.Itoa(tasksAddedCount)+" tasks saved.")
 			return m, tea.Quit
 		}
 

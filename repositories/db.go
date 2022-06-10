@@ -6,10 +6,14 @@ import (
 )
 
 func InitDB() {
+	db := CurrentDB()
+	db.AutoMigrate(&Task{})
+}
+
+func CurrentDB() *gorm.DB {
 	db, err := gorm.Open(sqlite.Open("database.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
-
-	db.AutoMigrate(&Task{})
+	return db
 }
