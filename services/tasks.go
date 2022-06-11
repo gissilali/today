@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-func InitTasksProgram() {
+func InitAddTasksProgram() {
 	program := tea.NewProgram(initialModel())
 
 	if err := program.Start(); err != nil {
@@ -24,7 +24,7 @@ type model struct {
 
 func initialModel() tea.Model {
 	taskInput := textinput.New()
-	taskInput.Placeholder = ""
+	taskInput.Placeholder = "Add a task"
 	taskInput.Focus()
 	return model{
 		textInput: taskInput,

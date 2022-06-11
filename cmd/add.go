@@ -9,6 +9,6 @@ var AddCmd = &cobra.Command{
 	Use:   "add",
 	Short: "add new task",
 	Run: func(cmd *cobra.Command, args []string) {
-		services.InitTasksProgram()
+		services.InitAddTasksProgram()
 	},
 }
