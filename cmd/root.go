@@ -1,8 +1,7 @@
 package cmd
 
 import (
-	"fmt"
-	"github.com/gissilali/today/repositories"
+	"github.com/gissilali/today/programs/list"
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -12,13 +11,7 @@ var rootCmd = &cobra.Command{
 	Short: "A todo app for what should be done today",
 	Long:  `A todo app for what should be done today, designed to be easy to use and avoid clutter that comes with complex UI`,
 	Run: func(cmd *cobra.Command, args []string) {
-		var tasks []repositories.Task
-
-		db := repositories.CurrentDB()
-		db.Find(&tasks)
-		for _, item := range tasks {
-			fmt.Println("✔", item.Task)
-		}
+		list.InitListTasksProgram()
 	},
 }
 
