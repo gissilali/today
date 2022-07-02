@@ -93,6 +93,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		case tea.KeyCtrlS:
 			return m, tea.Quit
+		case tea.KeyDelete:
+			db := repositories.CurrentDB()
+			db.Where("id = ?", m.tasks[m.cursor].ID).Delete(&m.tasks[m.cursor])
+			copyOfTasks := make([]repositories.Task, len(m.tasks))
+			copy(copyOfTasks, m.tasks)
+			m.tasks = append(copyOfTasks[:m.cursor], copyOfTasks[m.cursor+1:]...)
+			//fmt.Println(m.tasks)
 		case tea.KeySpace:
 			ok := m.tasks[m.cursor].IsDone
 			taskId := m.tasks[m.cursor].ID
@@ -108,15 +115,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		switch msg.String() {
 		case "q":
-			////ids := make([]uint, 0, len(m.marked))
-			//db := repositories.CurrentDB()
-			//for _, value := range m.tasks {
-			//	fmt.Println(value.IsDone)
-			//	db.Exec("UPDATE tasks SET is_done = ? WHERE id = ?", value.IsDone, value.ID)
-			//	//ids = append(ids, value)
-			//}
-			//
-			//fmt.Println("Saved every thing")
 			return m, tea.Quit
 		}
 

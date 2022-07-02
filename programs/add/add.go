@@ -40,7 +40,7 @@ func (m model) View() string {
 	tasksAddedCount := len(m.addedTasks)
 	var helpText string
 	if helpText = ""; tasksAddedCount > 0 {
-		helpText = "(esc to quit) " + strconv.Itoa(tasksAddedCount) + " tasks added"
+		helpText = "(ctrl+s to save) or (esc to quit) " + strconv.Itoa(tasksAddedCount) + " tasks added"
 	} else {
 		helpText = "(esc to quit)"
 	}
