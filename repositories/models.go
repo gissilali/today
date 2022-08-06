@@ -1,6 +1,9 @@
 package repositories
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/datatypes"
+	"gorm.io/gorm"
+)
 
 type Task struct {
 	gorm.Model
@@ -8,4 +11,5 @@ type Task struct {
 	IsDone     bool
 	TaskListId *uint64
 	AccountId  *uint32
+	DueOn      datatypes.Date
 }

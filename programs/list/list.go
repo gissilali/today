@@ -5,6 +5,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/gissilali/today/repositories"
+	"github.com/jinzhu/now"
 )
 
 func InitListTasksProgram() {
@@ -28,7 +29,7 @@ type errorMessage struct {
 func initialModel() tea.Model {
 	var tasks []repositories.Task
 	db := repositories.CurrentDB()
-	db.Find(&tasks)
+	db.Where("created_at BETWEEN ? AND ?", now.BeginningOfWeek(), now.EndOfWeek()).Find(&tasks)
 	return model{
 		tasks:  tasks,
 		marked: make(map[int]uint),
@@ -42,10 +43,16 @@ func (m model) Init() tea.Cmd {
 func (m model) View() string {
 	selectedStyle := lipgloss.NewStyle().
 		Bold(true).
-		Foreground(lipgloss.Color("#FAFAFA"))
+		Foreground(lipgloss.Color("#00ADD8"))
+
+	highlightedStyle := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#FAFAFA"))
+
+	checkMarkStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#B8EB80"))
+
+	titleStyle := lipgloss.NewStyle().PaddingBottom(1).PaddingTop(1).PaddingLeft(2)
 
 	// The header
-	s := "\nTasks for today\n"
+	s := titleStyle.Render("Tasks for this week")
 
 	// Iterate over our choices
 	for i, choice := range m.tasks {
@@ -53,18 +60,19 @@ func (m model) View() string {
 		// Is the cursor pointing at this choice?
 		cursor := " " // no cursor
 		if m.cursor == i {
-			cursor = ">" // cursor!
+			renderedTask = highlightedStyle.Render(choice.Task)
+			cursor = "➤" // cursor!
 		}
 
 		// Is this choice selected?
-		checked := " " // not selected
+		checked := "[]" // not selected
 		if _, ok := m.marked[i]; ok || m.tasks[i].IsDone {
-			checked = "X"
+			checked = checkMarkStyle.Render("✔")
 			renderedTask = selectedStyle.Render(choice.Task) // selected!
 		}
 
 		// Render the row
-		s += fmt.Sprintf("%s [%s] %s\n", cursor, checked, renderedTask)
+		s += fmt.Sprintf("\n%s %s  %s\n", cursor, checked, renderedTask)
 	}
 
 	// The footer

@@ -5,7 +5,9 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/gissilali/today/repositories"
+	"gorm.io/datatypes"
 	"strconv"
+	"time"
 )
 
 func InitAddTasksProgram() {
@@ -71,11 +73,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			for _, task := range m.addedTasks {
 				db := repositories.CurrentDB()
+				now := time.Now()
 				db.Create(&repositories.Task{
 					Task:       task,
 					IsDone:     false,
 					TaskListId: nil,
 					AccountId:  nil,
+					DueOn:      datatypes.Date(now),
 				})
 			}
 			tasksAddedCount := len(m.addedTasks)
